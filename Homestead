@@ -9,7 +9,7 @@ body {
     margin: 0;
     padding: 0;
     height: 100vh;
-    background-image: url('https://members.infinitygaming.co/app-assets/images/pages/bg6.jpg'); /* Replace with the path to your image */
+    background-image: url('https://members.infinitygaming.co/app-assets/images/pages/bg6.jpg');
     background-size: cover;
     background-position: center;
 }
@@ -22,12 +22,11 @@ body {
     background: #f0f0f0;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    display: flex; /* Always visible */
+    display: flex;
     flex-direction: column;
     overflow-y: auto;
 }
 
-/* Mobile-specific styles */
 @media (max-width: 768px) {
     #chat-container {
         width: 90%;
@@ -59,64 +58,59 @@ body {
 </style>
 </head>
 <body>
-<!-- Chat Widget Container -->
 <div id="chat-container">
     <div id="chat-header">Chat</div>
+    <div id="vf-chat-widget"></div> <!-- Widget placeholder -->
 </div>
 
 <script>
-// Function to simulate typing effect
 function simulateTyping(responseText, chatContainer) {
     const messageContainer = document.createElement('div');
-    messageContainer.classList.add('chat-message'); // Add class for styling
+    messageContainer.classList.add('chat-message');
     chatContainer.appendChild(messageContainer);
 
     let index = 0;
-    messageContainer.innerHTML = ''; // Ensure message container is empty
+    messageContainer.innerHTML = '';
     const typingInterval = setInterval(() => {
         messageContainer.innerHTML += responseText.charAt(index);
         index++;
-        // Scroll to the bottom
         chatContainer.scrollTop = chatContainer.scrollHeight;
         if (index === responseText.length) {
-            clearInterval(typingInterval); // Stop typing when message is complete
-            enableScrolling(chatContainer); // Re-enable scrolling after typing is done
+            clearInterval(typingInterval);
+            enableScrolling(chatContainer);
         }
-    }, 50); // Adjust speed of typing (50ms per character)
+    }, 50);
 }
 
-// Disable scrolling temporarily
 function disableScrolling(chatContainer) {
     chatContainer.style.overflowY = 'hidden';
 }
 
-// Enable scrolling
 function enableScrolling(chatContainer) {
     chatContainer.style.overflowY = 'auto';
 }
 
-// Modify the Voiceflow chat response to use the typing effect
 (function(d, t) {
-      var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
-      v.onload = function() {
+    var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
+    v.onload = function() {
         window.voiceflow.chat.load({
-          verify: { projectID: '674e9d4ec698b5bce6f571e7' },
-          url: 'https://general-runtime.voiceflow.com',
-          versionID: 'production'
+            verify: { projectID: '674e9d4ec698b5bce6f571e7' },
+            url: 'https://general-runtime.voiceflow.com',
+            versionID: 'production',
             render: {
                 mode: 'embedded',
-                target: document.getElementById('chat-container'),
-                // Override the default behavior to use our typing effect
+                target: document.getElementById('vf-chat-widget'),
                 responseHandler: function(responseText) {
                     const chatContainer = document.getElementById('chat-container');
-                    disableScrolling(chatContainer); // Disable scrolling while typing
-                    simulateTyping(responseText, chatContainer); // Simulate typing effect
+                    disableScrolling(chatContainer);
+                    simulateTyping(responseText, chatContainer);
                 }
             },
             autostart: false
         });
     }
     v.src = "https://cdn.voiceflow.com/widget/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
-  })(document, 'script');
+})(document, 'script');
+</script>
 </body>
 </html>
