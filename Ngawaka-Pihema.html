@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voiceflow Chat Widget</title>
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background-image: url('https://members.infinitygaming.co/app-assets/images/pages/bg6.jpg');
+    background-size: cover;
+    background-position: center;
+}
+#chat-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 400px;
+    height: 600px;
+    background: #f0f0f0;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+    #chat-container {
+        width: 90%;
+        height: 70%;
+        left: 5%;
+        bottom: 5%;
+    }
+}
+
+#chat-header {
+    background-color: #0078d4;
+    color: white;
+    padding: 10px;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-message {
+    padding: 10px;
+    margin: 5px;
+    font-size: 14px;
+    background-color: #2a3439;
+    color: white;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+</style>
+</head>
+<body>
+<div id="chat-container">
+    <div id="chat-header">Chat</div>
+    <div id="vf-chat-widget"></div> <!-- Widget placeholder -->
+</div>
+
+<script>
+function simulateTyping(responseText, chatContainer) {
+    const messageContainer = document.createElement('div');
+    messageContainer.classList.add('chat-message');
+    chatContainer.appendChild(messageContainer);
+
+    let index = 0;
+    messageContainer.innerHTML = '';
+    const typingInterval = setInterval(() => {
+        messageContainer.innerHTML += responseText.charAt(index);
+        index++;
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+        if (index === responseText.length) {
+            clearInterval(typingInterval);
+            enableScrolling(chatContainer);
+        }
+    }, 50);
+}
+
+function disableScrolling(chatContainer) {
+    chatContainer.style.overflowY = 'hidden';
+}
+
+function enableScrolling(chatContainer) {
+    chatContainer.style.overflowY = 'auto';
+}
+
+(function(d, t) {
+    var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
+    v.onload = function() {
+        window.voiceflow.chat.load({
+            verify: { projectID: '674e9d4ec698b5bce6f571e7' },
+            url: 'https://general-runtime.voiceflow.com',
+            versionID: 'production',
+            render: {
+                mode: 'embedded',
+                target: document.getElementById('vf-chat-widget'),
+                responseHandler: function(responseText) {
+                    const chatContainer = document.getElementById('chat-container');
+                    disableScrolling(chatContainer);
+                    simulateTyping(responseText, chatContainer);
+                }
+            },
+            autostart: false
+        });
+    }
+    v.src = "https://cdn.voiceflow.com/widget/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
+})(document, 'script');
+</script>
+</body>
+</html>
